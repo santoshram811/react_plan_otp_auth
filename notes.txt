@@ -1,0 +1,7 @@
+1..used in dummy otp model for real otp first un comnet..otp service, otp model, auth controller then you can use the real dndfileter otp 
+
+
+2.for reactivate url validdity default set is 30 days if want to change then just change it
+ from ...urlController---exports.reactivateUrl ----{ UPDATE shortcode
+      SET expires_at = DATE_ADD(NOW(), INTERVAL 30 DAY)
+      WHERE id = ?}
