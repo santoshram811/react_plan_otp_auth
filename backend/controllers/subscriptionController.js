@@ -16,6 +16,10 @@ exports.changePlan = (req, res) => {
     Subscription.activateNewPlan(userId, plan.id, billingType, (err) => {
       if (err) return res.status(500).json(err);
 
+      Subscription.deactivateFreePlanUrls(userId, (err) => {
+        if (err) console.log("Failed to deactivate free plan URLs", err);
+      });
+
       res.json({
         message: "Plan activated",
         price: plan.price,

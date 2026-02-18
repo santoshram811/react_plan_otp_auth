@@ -46,71 +46,6 @@ exports.updateProfile = (userId, name, email, cb) => {
   db.query(sql, [name, email, userId], cb);
 };
 
-// exports.findProfileWithActivePlan = (userId, cb) => {
-//   const sql = `
-//      SELECT
-//     u.id,
-//     u.mobile_number,
-//     u.name,
-//     u.email,
-
-//     p.id AS plan_id,
-//     p.name AS plan_name,
-//     p.code AS plan_code,
-//     p.description,
-//     p.limits,
-//     p.monthly_price,
-//     p.yearly_price
-
-   
-
-//   FROM users u
-
-//   LEFT JOIN user_subscriptions us
-//     ON us.user_id = u.id AND us.status = 'active'
-//   LEFT JOIN plans p
-//     ON p.id = us.plan_id
-
-//   WHERE u.id = ?
-//   LIMIT 1
-//   `;
-
-//   db.query(sql, [userId], (err, results) => {
-//     if (err) return cb(err);
-
-//     if (!results.length) return cb(null, null);
-
-//     const row = results[0];
-
-//     let limits = { max_urls: 5, tracked_clicks: 2 };
-
-//     if (row.limits) {
-//       try {
-//         limits = typeof row.limits === "string" ? JSON.parse(row.limits) : row.limits;
-//       } catch (e) {
-//         console.error("Invalid limits JSON:", row.limits);
-//       }
-//     }
-
-//     cb(null, {
-//       id: row.id,
-//       mobile_number: row.mobile_number,
-//       name: row.name,
-//       email: row.email,
-
-//       plan_id: row.plan_id,
-//       plan_name: row.plan_name,
-//       plan_code: row.plan_code,
-//       description: row.description,
-//       limits,
-//       monthly_price: row.monthly_price,
-//       yearly_price: row.yearly_price,
-//     });
-//   });
-// };
-
-
-
 exports.findProfileWithActivePlan = (userId, cb) => {
   const sql = `
      SELECT
@@ -159,10 +94,7 @@ exports.findProfileWithActivePlan = (userId, cb) => {
 
     if (row.limits) {
       try {
-        limits =
-          typeof row.limits === "string"
-            ? JSON.parse(row.limits)
-            : row.limits;
+        limits = typeof row.limits === "string" ? JSON.parse(row.limits) : row.limits;
       } catch (e) {
         console.error("Invalid limits JSON:", row.limits);
       }

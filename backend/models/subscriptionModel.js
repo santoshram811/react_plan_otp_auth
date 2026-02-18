@@ -127,3 +127,24 @@ exports.getPlanWithPrice = (code, billingType, cb) => {
     cb(null, rows.length ? rows[0] : null);
   });
 };
+exports.deactivateFreePlanUrls = (userId, cb) => {
+  const sql = `
+    UPDATE shortcode s
+    JOIN urls u ON u.short_code_id = s.id
+
+    JOIN user_subscriptions us
+      ON us.user_id = u.user_id
+      AND us.start_date <= u.created_at
+      AND (us.end_date IS NULL OR us.end_date >= u.created_at)
+
+    JOIN plans p ON p.id = us.plan_id
+
+    SET s.expires_at = NOW()
+
+    WHERE u.user_id = ?
+      AND p.code = 'free'
+      AND s.expires_at > NOW()
+  `;
+
+  db.query(sql, [userId], cb);
+};

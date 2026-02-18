@@ -13,6 +13,7 @@ import Navbar from "./components/Navbar";
 import About from "./components/About";
 import Services from "./components/Services";
 import Contact from "./components/Contact";
+import Footer from "./components/Footer";
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -34,5 +35,6 @@ createRoot(document.getElementById("root")).render(
         }
       />
     </Routes>
+    <Footer />
   </BrowserRouter>,
 );

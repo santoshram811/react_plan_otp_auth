@@ -1,14 +1,31 @@
 const Url = require("../models/urlModel");
 const { db } = require("../config/db");
 const User = require("../models/userModel");
+const baseUrl = process.env.BACKEND_URL;
+
+const { getExpiryFromPlan } = require("../utils/getExpiryFromPlan");
 
 exports.shortenUrl = (req, res) => {
-  const { originalUrl, durationValue, durationType } = req.body;
+  const { originalUrl } = req.body;
   const userId = req.user.id;
 
-  User.getActivePlanLimits(userId, (err, limits) => {
+  //  get full plan profile (NOT only limits)
+  User.findProfileWithActivePlan(userId, (err, profile) => {
     if (err) {
-      return res.status(500).json({ message: "Failed to read plan limits" });
+      return res.status(500).json({ message: "Failed to read plan" });
+    }
+
+    const limits = profile?.limits || { max_urls: 5, tracked_clicks: 2 };
+
+    let expiryDate;
+
+    // FREE user → 5 minutes
+    if (!profile?.plan_expiry) {
+      expiryDate = new Date();
+      expiryDate.setMinutes(expiryDate.getMinutes() + 60);
+    } else {
+      // PAID user → valid until subscription ends
+      expiryDate = new Date(profile.plan_expiry);
     }
 
     Url.countUserUrls(userId, (err, rows) => {
@@ -29,8 +46,6 @@ exports.shortenUrl = (req, res) => {
       }
 
       const cleanUrl = originalUrl.trim();
-      const value = parseInt(durationValue) || 10;
-      const type = durationType || "minutes";
 
       Url.findByOriginalUrl(userId, cleanUrl, (err, rows) => {
         if (err) return res.status(500).json(err);
@@ -38,14 +53,9 @@ exports.shortenUrl = (req, res) => {
         if (rows.length > 0) {
           return res.json({
             exists: true,
-            shortUrl: `http://localhost:3000/turain/${rows[0].short_code}`,
+            shortUrl: `${baseUrl}/${rows[0].short_code}`,
           });
         }
-
-        let expiryDate = new Date();
-        if (type === "minutes") expiryDate.setMinutes(expiryDate.getMinutes() + value);
-        else if (type === "hours") expiryDate.setHours(expiryDate.getHours() + value);
-        else expiryDate.setDate(expiryDate.getDate() + value);
 
         db.getConnection((err, conn) => {
           if (err) return res.status(500).json(err);
@@ -93,7 +103,7 @@ exports.shortenUrl = (req, res) => {
                     conn.release();
                     res.json({
                       exists: false,
-                      shortUrl: `http://localhost:3000/turain/${short_code}`,
+                      shortUrl: `${baseUrl}/${short_code}`,
                     });
                   });
                 });

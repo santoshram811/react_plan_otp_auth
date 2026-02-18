@@ -5,7 +5,7 @@ export const plans = [
     price: 0,
     period: "month",
     description: "Everything to get started",
-    features: ["Users: 1", "Custom domains: 5", "Branded links: 1,000", "Tracked clicks: 2/mo"],
+    features: ["Users: 1", "Custom domains: 3", "Branded links: 3", "Tracked clicks: 5"],
     highlighted: false,
   },
   {

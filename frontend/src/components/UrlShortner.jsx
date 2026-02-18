@@ -59,10 +59,14 @@ const UrlShortener = () => {
     }
 
     try {
+      // const response = await axiosInstance.post("/shorten", {
+      //   originalUrl,
+      //   durationValue,
+      //   durationType,
+      // });
+
       const response = await axiosInstance.post("/shorten", {
         originalUrl,
-        durationValue,
-        durationType,
       });
 
       setShortUrl(response.data.shortUrl);
@@ -233,7 +237,33 @@ const UrlShortener = () => {
           </div>
         </div>
       )}
+      <div className="max-w-xl mx-auto bg-white shadow rounded p-6">
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Enter URL"
+            value={originalUrl}
+            onChange={(e) => setOriginalUrl(e.target.value)}
+            className="border w-full p-2 rounded mb-4"
+          />
 
+          <button className="bg-green-600 text-white px-4 py-2 rounded">Shorten URL</button>
+        </form>
+
+        {message && <p className="mt-2">{message}</p>}
+
+        {shortUrl && (
+          <div className="mt-4">
+            <a href={shortUrl} target="_blank" rel="noreferrer" className="text-blue-600 underline">
+              {shortUrl}
+            </a>
+
+            <button onClick={handleCopy} className="ml-4 bg-gray-200 px-2 py-1 rounded">
+              {copied ? "Copied!" : "Copy"}
+            </button>
+          </div>
+        )}
+      </div>
       {/* HISTORY SECTION */}
       {showHistory && (
         <div className="max-w-6xl mx-auto mt-6 bg-white rounded-2xl shadow-md p-6">
@@ -271,52 +301,6 @@ const UrlShortener = () => {
       )}
 
       {/* SHORTEN FORM */}
-      <div className="max-w-xl mx-auto bg-white shadow rounded p-6">
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Enter URL"
-            value={originalUrl}
-            onChange={(e) => setOriginalUrl(e.target.value)}
-            className="border w-full p-2 rounded mb-4"
-          />
-
-          {/* <div className="flex gap-2 mb-4">
-            <input
-              type="number"
-              value={durationValue}
-              onChange={(e) => setDurationValue(e.target.value)}
-              className="border p-2 rounded w-20"
-            />
-
-            <select
-              value={durationType}
-              onChange={(e) => setDurationType(e.target.value)}
-              className="border p-2 rounded"
-            >
-              <option value="minutes">Minutes</option>
-              <option value="hours">Hours</option>
-              <option value="days">Days</option>
-            </select>
-          </div> */}
-
-          <button className="bg-green-600 text-white px-4 py-2 rounded">Shorten URL</button>
-        </form>
-
-        {message && <p className="mt-2">{message}</p>}
-
-        {shortUrl && (
-          <div className="mt-4">
-            <a href={shortUrl} target="_blank" rel="noreferrer" className="text-blue-600 underline">
-              {shortUrl}
-            </a>
-
-            <button onClick={handleCopy} className="ml-4 bg-gray-200 px-2 py-1 rounded">
-              {copied ? "Copied!" : "Copy"}
-            </button>
-          </div>
-        )}
-      </div>
     </div>
   );
 };

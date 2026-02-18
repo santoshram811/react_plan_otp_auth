@@ -1,5 +1,5 @@
 const express = require("express");
-require("dotenv").config();
+require("dotenv").config({ path: "./.env" });
 const app = express();
 const cors = require("cors");
 const port = process.env.PORT;
@@ -35,10 +35,10 @@ app.get("/", (req, res) => {
   res.send("backend server is running");
 });
 
-app.use("/turain", authRoutes);
-app.use("/turain", urlRoutes);
+app.use(authRoutes);
+app.use(urlRoutes);
 
-app.use("/turain/subscription", subscriptionRoutes);
+app.use("/subscription", subscriptionRoutes);
 
 app.listen(port, () => {
   console.log(`server is running on port ${port}`);

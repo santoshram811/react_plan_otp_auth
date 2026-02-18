@@ -8,7 +8,6 @@ exports.saveOtp = (userId, otp, expiresAt, cb) => {
   );
 };
 
-
 exports.verifyOtp = (userId, otp, cb) => {
   db.query(
     `
@@ -27,7 +26,5 @@ exports.verifyOtp = (userId, otp, cb) => {
 exports.markUsed = (id, cb) => {
   db.query("UPDATE user_otp SET is_used = 1 WHERE id = ?", [id], cb);
 };
-
-
 
 // maked for dummy otp model unmark for reaal

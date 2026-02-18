@@ -5,3 +5,14 @@
  from ...urlController---exports.reactivateUrl ----{ UPDATE shortcode
       SET expires_at = DATE_ADD(NOW(), INTERVAL 30 DAY)
       WHERE id = ?}
+
+token validity-- authController.js 
+
+
+  const login = (user) => {
+      const token = jwt.sign({ id: user.id, mobile }, process.env.JWT_SECRET, { expiresIn: "6h" });
+
+      User.updateToken(user.id, token, () => {
+        res.json({ token, user });
+      });
+    };
